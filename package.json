@@ -19,5 +19,13 @@
     "url": "https://github.com/Harmankhurana/Course-Selling-Application/issues"
   },
   "homepage": "https://github.com/Harmankhurana/Course-Selling-Application#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.3",
+    "nodemon": "^3.1.14",
+    "zod": "^4.3.6"
+  }
 }
