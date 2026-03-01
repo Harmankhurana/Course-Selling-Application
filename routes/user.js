@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { z } from 'zod';
 import Router from 'express';
 import { userModel } from '../database/db';
-import { JWT_USER_PASSWORD } from '../config.js'
+import { JWT_USER_PASSWORD } from '../config.js';
 
 const userRouter = Router();
 const saltRounds = 10;
@@ -23,6 +23,7 @@ userRouter.post('/signup', async function(req, res) {
             message: "Incorrect format used",
             error: parseDataWithSuccess,
         });
+        return;
     }
 
     const { firstName, lastName, email, password } = req.body;
@@ -42,21 +43,42 @@ userRouter.post('/signup', async function(req, res) {
             message: "You're signed up in User page"
         })
     } catch (e) {
-
+        res.json({
+            message: "Something went wrong while signing up"
+        })
     }
 });
 
 userRouter.post('/signin', async function(req, res) {
     const { email, password } = req.body;
 
-    await userModel.findOne({
-        email: email,
+    const response = await userModel.findOne({
+            email: email,
     });
 
-    const user = jwt.sign(token, )
+    if (!response) {
+        res.json({
+            message: "User does not exist in our DB!"
+        });
+    };
+    
+    const PasswordMatch = bcrypt.compare(password, PasswordMatch);
+
+    if (PasswordMatch){
+        const token = jwt.sign({
+            id: response._id.toString()
+        }, JWT_USER_PASSWORD);
+        res.json({
+            token: token,
+        });        
+    } else {
+        res.json({
+            message: "Incorrect credentials"
+        })
+    }
 });
 
-userRouter.post('/purchase', async function(req, res) {
+userRouter.post('/purchases', async function(req, res) {
     
 });
 
