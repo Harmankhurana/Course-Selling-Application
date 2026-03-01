@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { z } from 'zod';
 import Router from 'express';
 import { userModel } from '../database/db';
+import { JWT_USER_PASSWORD } from '../config.js'
 
 const userRouter = Router();
 const saltRounds = 10;
@@ -46,7 +47,13 @@ userRouter.post('/signup', async function(req, res) {
 });
 
 userRouter.post('/signin', async function(req, res) {
-    
+    const { email, password } = req.body;
+
+    await userModel.findOne({
+        email: email,
+    });
+
+    const user = jwt.sign(token, )
 });
 
 userRouter.post('/purchase', async function(req, res) {
