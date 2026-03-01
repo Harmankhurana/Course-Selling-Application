@@ -8,7 +8,7 @@ import { adminModel } from '../database/db.js';
 const adminRouter = Router();
 const saltRounds = 10;
 
-adminRouter.post('signup', async function (req, res) {
+adminRouter.post('/signup', async function (req, res) {
     const requiredBody = z.object({
         firstName: z.string,
         lastName: z.string,
@@ -49,7 +49,35 @@ adminRouter.post('signup', async function (req, res) {
     };
 });
 
+adminRouter.post('/signin', async function(req, res) {
+    const { email, password } = req.body;
 
+    const response = await adminModel.findOne({
+        email: email,
+    });
+
+    if (!response) {
+        res.json({
+            message: "Admin does not exist in our DB!"
+        });
+    };
+
+    const passwordMatch = bcrypt.compare(password, hashedPassword);
+
+    if(passwordMatch) {
+        const token = jwt.sign({
+            id: response._id.toString(),
+        }, JWT_ADMIN_PASSWORD);
+        res.json({
+            token: token,
+        });
+    } else {
+        res.json({
+            message: "Incorrect credentials",
+        })
+    }
+
+});
 
 export {
     adminRouter,

@@ -10,7 +10,7 @@ const userRouter = Router();
 const saltRounds = 10;
 
 userRouter.post('/signup', async function(req, res) {
-    requiredBody = z.object({
+    const requiredBody = z.object({
         firstName: z.string(),
         lastName: z.string(),
         email: z.string(),
