@@ -104,4 +104,5 @@ userRouter.post('/purchases', userMiddleware, async function(req, res) {
 
 export {
     userRouter,
+    userModel,
 }

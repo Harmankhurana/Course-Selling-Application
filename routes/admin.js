@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
-import bcrypt, { hash } from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { z } from 'zod';
-import Router from 'express';
+import { Router } from 'express';
 import { JWT_ADMIN_PASSWORD } from '../config.js';
-import { adminModel } from '../database/db.js';
+import { adminModel, courseModel } from '../database/db.js';
 
 const adminRouter = Router();
 const saltRounds = 10;
@@ -76,6 +76,31 @@ adminRouter.post('/signin', async function(req, res) {
             message: "Incorrect credentials",
         })
     }
+});
+
+adminRouter.post('/course', function(req, res) {
+    const adminId = req.userId;
+    const { title, description, price, imageUrl } = req.body;
+
+    const course = courseModel.create({
+        title: title,
+        description: description,
+        price: price,
+        imageUrl: imageUrl,
+        creatorId: adminId,
+    });
+
+    res.json({
+        message: "Course Created",
+        creatorId: course._id,
+    });
+});
+
+adminRouter.put('/course', function(req, res) {
+
+});
+
+adminRouter.get('/course/bulk', function(req, res) {
 
 });
 
