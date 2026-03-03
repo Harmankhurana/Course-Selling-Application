@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { Router } from 'express';
 import { JWT_ADMIN_PASSWORD } from '../config.js';
 import { adminModel, courseModel } from '../database/db.js';
+import { adminMiddleware } from '../middleware/admin.middleware.js';
 
 const adminRouter = Router();
 const saltRounds = 10;
@@ -78,11 +79,11 @@ adminRouter.post('/signin', async function(req, res) {
     }
 });
 
-adminRouter.post('/course', function(req, res) {
+adminRouter.post('/course', adminMiddleware, async function(req, res) {
     const adminId = req.userId;
     const { title, description, price, imageUrl } = req.body;
 
-    const course = courseModel.create({
+    const course = await courseModel.create({
         title: title,
         description: description,
         price: price,
@@ -96,13 +97,39 @@ adminRouter.post('/course', function(req, res) {
     });
 });
 
-adminRouter.put('/course', function(req, res) {
+adminRouter.put('/course', adminMiddleware, async function(req, res) {
+    const adminId = req.userId;
+    const { title, description, price, imageUrl } = req.body;
 
+    const course = await courseModel.updateOne({
+        _id: courseId,
+        courseId: adminId,
+    },
+    {
+        title: title,
+        description: description,
+        price: price,
+        imageUrl: imageUrl,
+    });
+
+    res.json({
+        message: "Course Updated",
+        creatorId: course._id,
+    });
 });
 
-adminRouter.get('/course/bulk', function(req, res) {
+// adminRouter.get('/course/bulk', adminMiddleware, async function(req, res) {
+//     const adminId = req.userId;
 
-});
+//     const courses = await CourseModel.find({
+//         courseId: adminId,
+//     });
+
+//     res.json({
+//         message: "All the Courses",
+//         creatorId: courses._id,
+//     })
+// });
 
 export {
     adminRouter,
