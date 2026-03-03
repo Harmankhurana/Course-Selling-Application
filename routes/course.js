@@ -2,7 +2,6 @@ const courseRouter = Router();
 import { userMiddleware } from '../middleware/user.middleware.js'
 import { CourseModel } from "../db.js";
 import { PurchasesModel } from "../db.js";
-import { TokenExpiredError } from 'jsonwebtoken';
 
 courseRouter.post('/purchase', userMiddleware, async function (req, res) {
     const userId = req.userId;
